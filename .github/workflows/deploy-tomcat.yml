@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest    # ← CHANGE THIS LINE
 
     steps:
       - name: Checkout GitHub Repository
@@ -25,7 +25,7 @@ jobs:
       - name: Prepare WAR for Deployment
         run: |
           mkdir output
-          cp target/TemperatureApp*.war output/TemperatureApp.war
+          cp target/*SNAPSHOT.war output/TemperatureApp.war
 
       - name: Deploy WAR to Tomcat Docker Container
         run: |
