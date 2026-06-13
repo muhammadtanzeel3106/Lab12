@@ -1,0 +1,33 @@
+name: Build and Deploy WAR to Docker Tomcat
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout GitHub Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java Environment
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '11'
+
+      - name: Build WAR using Maven
+        run: mvn clean package
+
+      - name: Prepare WAR for Deployment
+        run: |
+          mkdir output
+          cp target/TemperatureApp*.war output/TemperatureApp.war
+
+      - name: Deploy WAR to Tomcat Docker Container
+        run: |
+          docker cp output/TemperatureApp.war tomcat_server:/usr/local/tomcat/webapps/TemperatureApp.war
+          docker restart tomcat_server
